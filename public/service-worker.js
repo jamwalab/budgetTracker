@@ -5,17 +5,36 @@ const CACHE_NAME = APP_PREFIX + VERSION;
 
 //Files to be cached
 const FILES_TO_CACHE = [
+  '/',
   '/index.html',
   '/css/styles.css',
   '/js/index.js',
-  '/js/idb.js'
+  '/js/idb.js',
+  'https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css',
+  '/manifest.json',
+  'https://cdn.jsdelivr.net/npm/chart.js@2.8.0',
+  '/api/transaction',
+  '/icons/icon-192x192.png',
+  '/icons/icon-144x144.png'
 ];
 
 // Respond with cached resources
 self.addEventListener('fetch', function (e) {
-  console.log('fetch request : ' + e.request.url)
+  console.log('fetch request : ' + e.request.url);
   e.respondWith(
     caches.match(e.request).then(function (request) {
+      //Update API data in cache
+      if(e.request.url.match('/api/transaction')) {
+        e.waitUntil(
+          caches.open(CACHE_NAME).then(function (cache) {
+            console.log('updating API in : ' + CACHE_NAME)
+            return cache.add('/api/transaction')
+          })
+          //display message if app is offline
+          .catch(() => console.log("App offline, displaying cached data!"))
+        )
+      }
+
       if (request) { // if cache is available, respond with cache
         console.log('responding with cache : ' + e.request.url)
         return request
@@ -24,10 +43,9 @@ self.addEventListener('fetch', function (e) {
         return fetch(e.request)
       }
 
-      // You can omit if/else for console.log & put one line below like this too.
-      // return request || fetch(e.request)
     })
-  )
+  );
+ 
 })
 
 // Cache resources

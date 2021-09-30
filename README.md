@@ -17,6 +17,8 @@ No installation required.
 
 [Link to the application](https://limitless-caverns-12620.herokuapp.com/)
 
+![Preview](./public/images/homepage.png)
+
 ## Test
 Testing options are not available at the moment
 
